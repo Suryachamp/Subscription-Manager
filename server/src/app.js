@@ -1,0 +1,19 @@
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const morgan = require("morgan"); //This is for consoling the request that postman generates when we hit API
+const healthRoutes = require("./routes/health.routes");
+
+const app = express(); //main control center
+
+//This middleware runs before the route handler
+//Middleware like traffic controller what should do what
+app.use(cors());
+app.use(express.json()); //converts incoming json into js objects
+app.use(cookieParser()); //Required for jwt authentication
+app.use(morgan("dev"));
+
+//Routes through which will navigate throughout the site
+app.use("/health", healthRoutes);
+
+module.exports = app;
