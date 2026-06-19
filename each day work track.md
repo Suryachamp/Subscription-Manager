@@ -1,2 +1,41 @@
-1. Created the Basic folder structure client and server then initialize the git and connect it with github.
-2. 
+# 📅 Each Day Work Track - Subscription Manager
+
+Here is the log of progress made on the project, tracked by date and completed milestones.
+
+---
+
+### **Day 1: Project Initiation & Backend Architecture (June 16, 2026)**
+- Created the project folder structure: `client/` (Frontend boilerplate) and `server/` (Express API).
+- Initialized Git and connected the repository to GitHub.
+- Setup Node.js backend workspace in the `server/` directory and initialized `package.json`.
+- Installed primary backend dependencies: `express`, `cors`, `dotenv`, `cookie-parser`, and `nodemon` (development daemon).
+- Designed the system architecture, database schema layout, and overall development roadmap.
+
+---
+
+### **Day 2: Base Server setup & API Validation (June 18, 2026)**
+- Created `server.js` and `app.js` to serve as the entry points for the REST API.
+- Implemented `/health` routes to serve as server health checks.
+- Resolved server crashes and debugged Syntax & TypeError exceptions:
+  - Corrected CommonJS `require` module imports (removed `.default` parser conflicts).
+  - Mounted the router correctly using `app.use("/health", healthRoutes)` instead of `app.get()`.
+- Successfully ran and validated the API server locally on port `5000` via curl and Postman requests.
+
+---
+
+### **Day 3: Database Integration & Authentication Pre-requisites (June 19, 2026) [Today]**
+- Initialized Prisma ORM in the backend.
+- Configured PostgreSQL connection string using `.env` (`postgresql://subscription_user:***@localhost:5432/subscription_manager`).
+- Resolved local PostgreSQL database permission challenges:
+  - Authorized schema permissions and ownership for `subscription_user` on the `public` database schema.
+  - Granted `CREATEDB` privileges to allow Prisma Migrate to create the shadow database.
+- Created the `User` data model in `server/prisma/schema.prisma` with auto-incrementing primary keys, email uniqueness, and timestamp columns.
+- Generated and executed the initial schema migration using `npx prisma migrate dev --name init`.
+- Installed backend security packages:
+  - `bcrypt`: To hash passwords before storing them.
+  - `jsonwebtoken` (JWT): To generate secure access tokens for session validation.
+- Initialized the global Prisma Client inside `server/src/config/prisma.js` to enable db communication.
+- Created `auth.routes.js` and `auth.controller.js` to structure the user session and account creation routing.
+- Mounted the authorization sub-router in `app.js` under the `/api/auth` path prefix.
+- Written a mock user registration controller returning a JSON success message.
+- Troubleshooted and cleared frozen network socket deadlocks on port `5000` by identifying and terminating zombie processes, resolving Postman response delays.

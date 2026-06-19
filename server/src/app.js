@@ -3,6 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan"); //This is for consoling the request that postman generates when we hit API
 const healthRoutes = require("./routes/health.routes");
+const authRoutes = require("./routes/auth.routes");
 
 const app = express(); //main control center
 
@@ -15,5 +16,7 @@ app.use(morgan("dev"));
 
 //Routes through which will navigate throughout the site
 app.use("/health", healthRoutes);
+app.use("/api/auth", authRoutes);
+
 
 module.exports = app;
