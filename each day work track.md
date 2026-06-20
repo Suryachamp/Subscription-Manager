@@ -39,3 +39,15 @@ Here is the log of progress made on the project, tracked by date and completed m
 - Mounted the authorization sub-router in `app.js` under the `/api/auth` path prefix.
 - Written a mock user registration controller returning a JSON success message.
 - Troubleshooted and cleared frozen network socket deadlocks on port `5000` by identifying and terminating zombie processes, resolving Postman response delays.
+
+---
+
+### **Day 4: Schema Validation & Database CRUD Implementation (June 20-21, 2026)**
+- Installed `zod` library to perform robust server-side schemas and request validation.
+- Created schema validators in `server/src/validations/auth.validations.js` to enforce proper validation for registration inputs (email format, minimum password length, and trimmed names).
+- Integrated the validator in `auth.controller.js` to parse request payloads cleanly.
+- Implemented real database persistence logic in `auth.controller.js` using Prisma client:
+  - Checked for pre-existing emails to prevent duplicates (returning `409 Conflict`).
+  - Hashed user passwords securely using `bcrypt` (10 salt rounds).
+  - Saved new users to the PostgreSQL database.
+  - Returned formatted JSON responses with `201 Created` status, omitting the password hash for safety.
