@@ -16,6 +16,18 @@ const registerSchema = z.object({
         .min(8,"Password must be of atleast 9 characters"),
 });
 
+const loginSchema = z.object({
+    email:z
+        .string()
+        .email("Please provide a valid email")
+        .toLowerCase(),
+    
+    password:z
+        .string()
+        .min(8,"Password must be of atleast 9 characters"),
+});
+
 module.exports = {
     registerSchema,
+    loginSchema
 };

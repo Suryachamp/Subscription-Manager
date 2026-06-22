@@ -1,15 +1,18 @@
 const prisma = require("../config/prisma");
 const bcrypt = require("bcrypt");
-const {registerSchema} = require("../validations/auth.validations")
+const { registerSchema } = require("../validations/auth.validations");
+const { loginSchema } = require("../validations/auth.validations");
+const jwt = require("jsonwebtoken");
+const { is } = require("zod/v4/locales");
 
 exports.register = async (req, res) => {
   try {
     const validationResult = registerSchema.safeParse(req.body);
 
     if (!validationResult.success) {
-        return res.status(400).json({
-            errors: validationResult.error.flatten().fieldErrors,
-        });
+      return res.status(400).json({
+        errors: validationResult.error.flatten().fieldErrors,
+      });
     }
 
     const { name, email, password } = validationResult.data;
@@ -49,6 +52,66 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const validationResult = loginSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      return res.status(400).json({
+        errors: validationResult.error.flatten().fieldErrors,
+      });
+    }
+
+    const { email, password } = validationResult.data;
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid Username or password",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Invalid usersname or password",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      process.env.JWT_SECRET_KEY,
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      message: "Login Successful",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.log(error);
 
     return res.status(500).json({
       message: "Internal server error",
