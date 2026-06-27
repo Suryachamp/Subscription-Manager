@@ -20,3 +20,25 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+// subscription schema
+
+model Subscription {
+  id                   Int      @id @default(autoincrement())
+  platformName         String
+  category             String
+  price                Decimal
+  currency             String
+  billingCycle         String
+  startDate            DateTime
+  renewalDate          DateTime
+  reminderDaysBefore   Int
+  paymentMethod        String
+  paymentProvider      String
+  status               String
+  subscriptionSource   String
+  userId               Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}

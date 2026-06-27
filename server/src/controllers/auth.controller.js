@@ -1,7 +1,7 @@
 const prisma = require("../config/prisma");
 const bcrypt = require("bcrypt");
-const { registerSchema } = require("../validations/auth.validations");
-const { loginSchema } = require("../validations/auth.validations");
+const { registerSchema } = require("../validations/subscription.validation");
+const { loginSchema } = require("../validations/subscription.validation");
 const jwt = require("jsonwebtoken");
 const { is } = require("zod/v4/locales");
 
