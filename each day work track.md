@@ -51,3 +51,27 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Hashed user passwords securely using `bcrypt` (10 salt rounds).
   - Saved new users to the PostgreSQL database.
   - Returned formatted JSON responses with `201 Created` status, omitting the password hash for safety.
+
+---
+
+### **Day 5: User Authentication & Route Protection (June 22-23, 2026)**
+- Implemented the login controller (`auth.controller.js`):
+  - Validated login inputs (`email`, `password`) using Zod.
+  - Verified user password matches the database hash using `bcrypt.compare`.
+  - Generated stateless sessions using JSON Web Tokens (JWT).
+  - Sent the generated JWT token to the client via secure HTTP-Only cookies (`res.cookie()`).
+- Created authentication middleware (`auth.middleware.js`):
+  - Extracts and verifies the JWT session token from incoming client request cookies.
+  - Populates the request context (`req.user`) with the user's ID upon valid token verification.
+- Developed profile query endpoint (`user.controller.js` and `user.routes.js`):
+  - Created a protected `/api/users/me` endpoint to fetch authenticated user information.
+
+---
+
+### **Day 6: Subscription Database Modeling (June 27, 2026) [Today]**
+- Designed and added the `Subscription` database model inside `server/prisma/schema.prisma` to track:
+  - Financial fields: `price`, `currency`, `billingCycle`, `paymentMethod`, and `paymentProvider`.
+  - Date fields: `startDate`, `renewalDate`, and `reminderDaysBefore`.
+  - Metadata fields: `platformName`, `category`, `status`, and `subscriptionSource`.
+  - Relation key: `userId` to map subscriptions back to their owning user account.
+- Successfully pushed the new changes to the remote repository.
