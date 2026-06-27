@@ -13,32 +13,62 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())  //integre type primary key auto increment
+  // Primary Key
+  id        Int      @id @default(autoincrement())
+
+  // User Information
   name      String
   email     String   @unique
   password  String
+
+  // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // One User -> Many Subscriptions
+  // This is NOT a database column.
+  // It tells Prisma that one user can have many subscriptions.
+  subscriptions Subscription[]
 }
 
-
-// subscription schema
-
 model Subscription {
+  // Primary Key
   id                   Int      @id @default(autoincrement())
+
+  // Subscription Details
   platformName         String
   category             String
-  price                Decimal
+
+  // Financial Information
+  price                Decimal  @db.Decimal(10, 2)
   currency             String
+
+  // Billing Information
   billingCycle         String
   startDate            DateTime
   renewalDate          DateTime
+
+  // Reminder Settings
   reminderDaysBefore   Int
+
+  // Payment Details
   paymentMethod        String
   paymentProvider      String
+
+  // Subscription Status
   status               String
+
+  // Source of Subscription
+  // Example: MANUAL or PLAID
   subscriptionSource   String
+
+  // Foreign Key
   userId               Int
+
+  // Many Subscriptions -> One User
+  user                 User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Timestamps
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }
