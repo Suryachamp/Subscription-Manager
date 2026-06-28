@@ -75,3 +75,18 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Metadata fields: `platformName`, `category`, `status`, and `subscriptionSource`.
   - Relation key: `userId` to map subscriptions back to their owning user account.
 - Successfully pushed the new changes to the remote repository.
+
+---
+
+### **Day 7: Subscription Management API (June 28-29, 2026)**
+- Refactored `Subscription` database model:
+  - Changed the `price` column type from `Decimal` to `Float` in `schema.prisma` for easier calculation handling.
+  - Generated and executed a new schema migration (`20260628175245_add_subscriptio`) to apply the schema updates.
+- Added input validation rules:
+  - Implemented `subscriptionSchema` using Zod inside `subscription.validation.js` to validate pricing, currency formats, start/renewal dates, and enums for billing cycles, payment methods, and statuses.
+- Created subscription controller (`subscription.controller.js`):
+  - Built the `createSubscription` controller, parsing input data, converting dates, and storing subscriptions associated with the authenticated user (`req.user.userId`).
+- Developed subscription routes & routing config:
+  - Set up a protected `POST /` endpoint inside `subscription.routes.js` using `authMiddleware`.
+  - Mounted the router in `app.js` under the path `/api/subscriptions`.
+- Pushed the completed subscription API functionality to GitHub.
