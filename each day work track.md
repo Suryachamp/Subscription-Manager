@@ -90,3 +90,11 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Set up a protected `POST /` endpoint inside `subscription.routes.js` using `authMiddleware`.
   - Mounted the router in `app.js` under the path `/api/subscriptions`.
 - Pushed the completed subscription API functionality to GitHub.
+
+---
+
+### **Day 8: Retrieve Subscriptions API Skeleton (July 1, 2026) [Today]**
+- Began development of subscription retrieval features:
+  - Created the `getSubscription` controller skeleton inside `subscription.controller.js` to prepare for query execution.
+  - Registered a protected `GET /` endpoint in `subscription.routes.js` protected by `authMiddleware` to verify requests before database querying.
+- Pushed the initial route and controller skeleton to GitHub.
