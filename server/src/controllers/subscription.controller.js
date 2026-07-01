@@ -64,3 +64,16 @@ exports.createSubscription = async (req, res) => {
     });
   }
 };
+
+
+exports.getSubscription = async (req,res) => {
+  try{
+
+  } catch (error){
+    console.log("Get subscription Error:", error);
+
+    return res.status(500).json({
+      message
+    })
+  }
+};
