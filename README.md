@@ -148,9 +148,9 @@ erDiagram
 ---
 
 ## 📈 Learning and Progression Plan
-1. **Database & ORM Layer**: Set up PostgreSQL connection, schema design, and Prisma configuration.
-2. **Backend Engine**: Build REST APIs with complete input validations, routing, and controller architectures.
-3. **Session Security**: Implement password hashing, JWT operations, and cookie storage. Verify with Postman.
-4. **React Client Boilerplate**: Configure Vite, Tailwind, TanStack Query, and Zustand.
-5. **UI Integration**: Build forms (React Hook Form + Zod) and dashboards, connecting them to our backend.
-6. **External Automations**: Connect Plaid Link, query transactions, and configure background jobs for renewal notices.
+1. **[Completed] Database & ORM Layer**: Set up PostgreSQL connection, schema design, and Prisma configuration.
+2. **[Completed] Session Security**: Implement password hashing, JWT operations, and cookie storage. Checked and verified in Postman.
+3. **[Completed] Backend REST APIs**: Built core registration, login, and subscription CRUD APIs with Zod schemas and route controllers.
+4. **[Next Step] React Client Boilerplate**: Configure Vite, Tailwind, TanStack Query, and Zustand for the user interface.
+5. **[Pending] UI Integration**: Build forms (React Hook Form + Zod) and dashboards, connecting them to our backend.
+6. **[Pending] External Automations**: Connect Plaid Link, query transactions, and configure background jobs for renewal notices.
