@@ -92,3 +92,35 @@ exports.getSubscription = async (req,res) => {
   }
 };
 
+
+exports.getSubscriptionbyId = async (req,res) => {
+  try{
+    //this will convert the id to number because the one that is coming in json is in string
+    const id = Number(req.params.id); //value extracted from the URL (like :id)
+    const userId = req.user.userId; //
+
+    const subscription = await prisma.subscription.findFirst({
+      where:{
+        id,
+        userId
+      }
+    })
+
+    if(!subscription){
+      return res.status(404).json({
+        message:"Subscription not found",
+      });
+    }
+
+    return res.status(200).json({
+      message:"Subscription fetched successfully",
+      subscription,
+    })
+  } catch (error) {
+    console.log("Get subscription by id error:", error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    })
+  }
+};

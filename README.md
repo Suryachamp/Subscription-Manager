@@ -4,6 +4,24 @@ A production-grade, full-stack subscription tracking application designed with s
 
 ---
 
+## 🛠️ Implemented Features & Core Concepts
+Here is the core functionality that has been built and implemented in this project so far:
+* **Database Management with Prisma ORM**: 
+  - Integrated PostgreSQL database connection using **Prisma ORM**.
+  - Built relational database schemas (`User` and `Subscription` models) in `prisma/schema.prisma`.
+  - Created and ran database schema migrations (`init` and `add_subscriptio`) to synchronize changes.
+* **Secure Authentication & Token Flow**:
+  - Input validation using **Zod** schema parser.
+  - Safe password storage using **Bcrypt** hashing.
+  - Session authorization using **JSON Web Tokens (JWT)** delivered via secure, script-inaccessible `HttpOnly` cookies.
+  - Route protection through custom middleware (`authMiddleware.js`) decoding cookies to authorize queries.
+* **Subscription Management API**:
+  - **Create Subscriptions (`POST /api/subscriptions`)**: Accepts validated metadata (platform names, billing cycles, start/renewal dates, payment types) and registers them under the authenticated user.
+  - **Retrieve All Subscriptions (`GET /api/subscriptions`)**: Fetches all active subscriptions associated with the logged-in user.
+  - **Retrieve Subscription by ID (`GET /api/subscriptions/:id`)**: Correctly matches parameterized IDs to fetch a single subscription record.
+
+---
+
 ## 🚀 Key Features
 - **Secure Authentication**: Session-based credentials using JWT stored in security-hardened `HttpOnly` cookies.
 - **Manual CRUD**: Create, read, update, and delete subscription records manually with transactional schema validation.
