@@ -98,3 +98,11 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Created the `getSubscription` controller skeleton inside `subscription.controller.js` to prepare for query execution.
   - Registered a protected `GET /` endpoint in `subscription.routes.js` protected by `authMiddleware` to verify requests before database querying.
 - Pushed the initial route and controller skeleton to GitHub.
+
+---
+
+### **Day 9: Retrieve Subscriptions API Implementation (July 2, 2026) [Today]**
+- Implemented the user subscription retrieval query logic:
+  - Updated the `getSubscription` controller inside `subscription.controller.js` to fetch all subscriptions associated with the authenticated user (`req.user.userId`) using Prisma's `findMany` operator.
+  - Resolved potential runtime exceptions inside the `catch` block by substituting the undefined reference with a standardized JSON `"Internal server error"` response.
+- Successfully pushed the fully functional subscription retrieval API to GitHub.
