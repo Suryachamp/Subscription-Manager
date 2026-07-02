@@ -68,12 +68,27 @@ exports.createSubscription = async (req, res) => {
 
 exports.getSubscription = async (req,res) => {
   try{
+    //why because this will give me only the subcriptions that belong to this user
+    const userId = req.user.userId;
+
+    //This is to get exacctly what subscriptions does that x user hold from the db
+    const subscriptions = await prisma.subscription.findMany({
+      where:{
+        userId: userId,
+      }
+    })
+
+    return res.status(200).json({
+      message: "Subscription fetched successfully",
+      subscriptions
+    })
 
   } catch (error){
     console.log("Get subscription Error:", error);
 
     return res.status(500).json({
-      message
+      message: "Internal server error",
     })
   }
 };
+
