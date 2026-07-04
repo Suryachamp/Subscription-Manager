@@ -106,3 +106,12 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Updated the `getSubscription` controller inside `subscription.controller.js` to fetch all subscriptions associated with the authenticated user (`req.user.userId`) using Prisma's `findMany` operator.
   - Resolved potential runtime exceptions inside the `catch` block by substituting the undefined reference with a standardized JSON `"Internal server error"` response.
 - Successfully pushed the fully functional subscription retrieval API to GitHub.
+
+---
+
+### **Day 10: Root Folder Cleanup & Client Boilerplate Integration (July 4, 2026) [Today]**
+- Restructured workspace layout to ensure a clean root directory:
+  - Removed duplicate `package.json`, `package-lock.json`, and `node_modules` folders from the root level.
+  - Installed the `morgan` package inside the `server/` project so it is managed self-containedly.
+  - Set up a clean separation of concerns: `/client` holds React & Vite frontend dependencies, and `/server` holds Express & Prisma backend dependencies.
+- Staged, committed, and pushed the new project structure along with the React client boilerplate to GitHub.
