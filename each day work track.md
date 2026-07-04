@@ -115,3 +115,15 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Installed the `morgan` package inside the `server/` project so it is managed self-containedly.
   - Set up a clean separation of concerns: `/client` holds React & Vite frontend dependencies, and `/server` holds Express & Prisma backend dependencies.
 - Staged, committed, and pushed the new project structure along with the React client boilerplate to GitHub.
+
+---
+
+### **Day 11: Frontend Styling & Page Routing Skeleton Setup (July 5, 2026) [Today]**
+- Integrated **Tailwind CSS v4** in `vite.config.js` and imported it in `index.css`.
+- Configured project design tokens in `theme.js` and custom CSS variables in `theme.css`.
+- Created UI page skeletons for the app:
+  - Landing Page (`Landing.jsx`)
+  - Auth pages (`Login.jsx`, `Register.jsx`)
+  - Dashboard page (`Dashboard.jsx`)
+  - Subscription management pages (`AddSubscription.jsx`, `SubscriptionDetails.jsx`)
+- Successfully pushed the new frontend setup to GitHub.
