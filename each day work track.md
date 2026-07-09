@@ -127,3 +127,41 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Dashboard page (`Dashboard.jsx`)
   - Subscription management pages (`AddSubscription.jsx`, `SubscriptionDetails.jsx`)
 - Successfully pushed the new frontend setup to GitHub.
+
+---
+
+### **Day 12: Client-Side Routing & Basic Page Structure (July 6, 2026)**
+- Installed `react-router-dom` and wrapped `<App />` inside `<BrowserRouter>` in `main.jsx`.
+- Configured client-side routes in `App.jsx`:
+  - `/` → Landing Page
+  - `/login` → Login Page
+  - `/register` → Register Page
+  - `/dashboard` → Dashboard Page
+- Created placeholder `Navbar.jsx` and `Sidebar.jsx` layout components.
+- Created `DashboardLayout.jsx` to serve as the shell layout for authenticated pages.
+- Pushed basic routing and page structure to GitHub.
+
+---
+
+### **Day 13: Dashboard Layout Refinement (July 7, 2026)**
+- Refined `DashboardLayout.jsx` with a proper sidebar and content area structure.
+- Created a reusable `Button.jsx` UI component.
+- Pushed the updated dashboard layout to GitHub.
+
+---
+
+### **Day 14: Landing Page UI — Full Design & Build (July 8-9, 2026) [Today]**
+- Installed **Google Fonts** (Inter + Space Grotesk) and updated `index.html` with SEO meta tags.
+- Built a complete dark fintech-themed landing page with custom CSS variables and Tailwind v4:
+  - **Navbar**: Floating glassmorphism navbar with animated hover indicator using `layoutId`, mobile hamburger menu with animated dropdown.
+  - **Hero Section**: Centered layout with massive animated headline (word-by-word blur-in reveal), multi-color animated gradient text (rose → amber → emerald → violet), CTA buttons with shimmer overlay, and trust indicator row.
+  - **WalletCard**: Interactive 3D mouse-follow tilt effect using `useMotionValue` + `useSpring` + `useTransform`, draggable with spring constraints, staggered subscription list reveal, glassmorphism styling.
+  - **Features Section**: Bento-grid layout (mixed card widths), 6 feature cards each with unique gradient pair, scroll-triggered entrance animations, animated top-border on hover.
+  - **Stats Section**: Animated counting numbers with ease-out cubic interpolation, scroll-triggered via `useInView`.
+  - **CTA Section**: Centered call-to-action with animated gradient text and social proof (stacked avatar circles).
+  - **Footer**: Multi-column layout with gradient top border, animated social icons, and credits bar.
+- Created `Background.jsx` with animated morphing gradient orbs (rose, violet, emerald, amber), subtle grid pattern overlay, and multi-colored floating particles.
+- Built animated `Button.jsx` with gradient backgrounds, glow shadows, shimmer overlay, and motion `whileHover`/`whileTap` effects.
+- Cleaned up unused files (`theme.css`, `theme.js`, old `Navbar.jsx`) and removed broken CSS mask techniques.
+- Made all sections fully responsive with Tailwind breakpoints (`sm`, `md`, `lg`).
+- Pushed the complete landing page UI to GitHub.
