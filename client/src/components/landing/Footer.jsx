@@ -9,47 +9,37 @@ const footerLinks = {
 
 function Footer() {
   return (
-    <footer className="relative border-t border-white/5 pt-12 pb-8 sm:pt-16">
-      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
-
+    <footer className="bg-white border-t border-[var(--border)] pt-12 pb-8 sm:pt-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-5 md:gap-12">
 
-          {/* Brand */}
           <div className="sm:col-span-2">
             <div className="flex items-center gap-2.5">
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-xl font-display text-sm font-bold text-white"
-                style={{ background: "linear-gradient(135deg, #10b981, #06b6d4)" }}
-              >
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--accent)] font-display text-sm font-bold text-white shadow-sm">
                 S
               </div>
               <span className="font-display text-base font-bold text-[var(--text-primary)]">Subtrack</span>
             </div>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[var(--text-muted)]">
-              The smartest way to track and control all your recurring subscriptions.
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--text-secondary)]">
+              The smartest way to track and control all your recurring subscriptions. No more surprise charges.
             </p>
-            <div className="mt-5 flex gap-2.5">
+            <div className="mt-6 flex gap-3">
               {[FaGithub, FaTwitter, FaLinkedin].map((Icon, i) => (
-                <motion.a
-                  key={i} href="#"
-                  whileHover={{ y: -2, scale: 1.1 }}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/5 bg-white/[0.03] text-sm text-[var(--text-muted)] transition-colors hover:text-emerald-400"
-                >
+                <motion.a key={i} href="#" whileHover={{ y: -2 }}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border)] bg-slate-50 text-[var(--text-secondary)] transition-colors hover:border-[var(--border-hover)] hover:text-[var(--accent)] hover:shadow-sm">
                   <Icon />
                 </motion.a>
               ))}
             </div>
           </div>
 
-          {/* Links */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)]">{title}</h4>
-              <ul className="space-y-2.5">
+              <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--text-primary)]">{title}</h4>
+              <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-sm text-[var(--text-muted)] no-underline transition-colors hover:text-emerald-400">{link}</a>
+                    <a href="#" className="text-sm font-medium text-[var(--text-secondary)] no-underline transition-colors hover:text-[var(--accent)]">{link}</a>
                   </li>
                 ))}
               </ul>
@@ -57,10 +47,9 @@ function Footer() {
           ))}
         </div>
 
-        {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-6 text-xs text-[var(--text-muted)] sm:mt-16 sm:flex-row sm:pt-8">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--border)] pt-8 text-sm font-medium text-[var(--text-secondary)] sm:flex-row">
           <p>© 2026 Subtrack. All rights reserved.</p>
-          <p>Built with <span className="text-emerald-400">♥</span> by Surya</p>
+          <p>Built with <span className="text-[var(--accent)]">♥</span> by Surya</p>
         </div>
       </div>
     </footer>

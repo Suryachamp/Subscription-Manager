@@ -4,6 +4,12 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 
+/**
+ * Main Application Component (The Router)
+ * 
+ * This component looks at the current URL in the browser and decides which 
+ * page to show. 
+ */
 function App() {
   return ( 
     <Routes>

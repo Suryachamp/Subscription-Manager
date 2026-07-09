@@ -4,54 +4,52 @@ import { FaArrowRight } from "react-icons/fa";
 
 function CTA() {
   return (
-    <section id="cta" className="relative overflow-hidden py-20 sm:py-32">
+    <section id="cta" className="relative bg-[var(--bg-secondary)] py-20 sm:py-32 border-t border-[var(--border)]">
       <div className="relative mx-auto max-w-3xl px-5 text-center sm:px-8">
-
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <span className="mb-5 inline-block rounded-full border border-violet-500/20 bg-violet-500/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-violet-400">
+          <span className="mb-5 inline-block rounded-full bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[var(--accent)] shadow-sm ring-1 ring-[var(--border)]">
             Get Started Today
           </span>
 
-          <h2 className="mt-4 font-display text-3xl font-bold leading-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl lg:text-6xl">
-            Ready to{" "}
-            <span className="text-gradient">stop overpaying</span>
+          <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl">
+            Ready to stop <span className="text-[var(--accent)]">overpaying</span>
             <br />for subscriptions?
           </h2>
 
-          <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-[var(--text-secondary)] sm:mt-6 sm:text-base">
+          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-[var(--text-secondary)]">
             Join thousands of users who save money every month by keeping track of exactly where their money goes.
           </p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.1 }}
             className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
           >
-            <Button variant="primary">Create Free Account <FaArrowRight className="text-xs" /></Button>
-            <Button variant="secondary">View Demo</Button>
+            <Button variant="primary" className="!h-12 !px-8">Create Free Account <FaArrowRight className="ml-2 text-xs" /></Button>
+            <Button variant="secondary" className="!h-12 !px-8">View Demo</Button>
           </motion.div>
 
-          {/* Social proof */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="mt-10 flex items-center justify-center gap-3"
+            transition={{ delay: 0.3 }}
+            className="mt-10 flex items-center justify-center gap-4"
           >
-            <div className="flex -space-x-2">
-              {["#10b981", "#06b6d4", "#8b5cf6", "#f43f5e"].map((c, i) => (
-                <div key={i} className="h-7 w-7 rounded-full border-2 border-[var(--bg-primary)] sm:h-8 sm:w-8" style={{ background: `${c}40` }} />
+            <div className="flex -space-x-3">
+              {[0.1, 0.2, 0.4, 0.6].map((o, i) => (
+                <div key={i} className="h-10 w-10 rounded-full border-2 border-white bg-[var(--accent)]"
+                  style={{ opacity: o }} />
               ))}
             </div>
-            <p className="text-xs text-[var(--text-muted)] sm:text-sm">
-              <span className="font-semibold text-[var(--text-secondary)]">2,400+</span> joined this week
+            <p className="text-sm text-[var(--text-secondary)]">
+              <span className="font-bold text-[var(--text-primary)]">2,400+</span> joined this week
             </p>
           </motion.div>
         </motion.div>
