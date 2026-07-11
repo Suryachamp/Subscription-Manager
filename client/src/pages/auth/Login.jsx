@@ -1,7 +1,11 @@
 import { motion } from "motion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Background from "../landing/Background";
 import Button from "../../components/ui/Button";
+import api from "../../api/axios";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/authSlice";
+import { useState } from "react";
 
 /**
  * Login Page
@@ -10,15 +14,50 @@ import Button from "../../components/ui/Button";
  * and a glassmorphic card to match the landing page theme.
  */
 function Login() {
+
+  const[formData, setFormData] = useState({
+    email:"",
+    password:""
+  });
+  const[error, setError] = useState("");
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();  // This will talk to the redux 
+
+  // Function to update state when typing
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Function to send data to the backend
+  const handleLogin = async (e) =>{
+    e.preventDefault();
+    setError("");
+
+    try{
+      // This sends data to the backend 
+      const response = await api.post("/auth/login", formData);
+      
+      // The backend says "Success!" and gives us the user data.
+      // We DISPATCH that data to our Redux Vault so the whole app knows!
+      dispatch(loginSuccess(response.data.user));
+    
+      // after the data being sent to the whole site we will redirect to the dashboard
+      navigate("/")
+    }catch(error){
+      setError(error.response?.data?.message || "Invalid email or password");
+    }
+  }
+
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--bg-primary)] px-5">
+    <div className="relative flex min-h-screen flex-col items-center overflow-x-hidden overflow-y-auto bg-[var(--bg-primary)] px-5 py-10">
       <Background />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="glass-card w-full max-w-[400px] rounded-3xl p-8 sm:p-10 z-10"
+        className="glass-card w-full max-w-[400px] rounded-3xl p-8 sm:p-10 z-10 my-auto"
       >
         {/* Logo/Header */}
         <div className="mb-8 text-center">
@@ -32,13 +71,16 @@ function Login() {
         </div>
 
         {/* Form (Static) */}
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4" onSubmit={handleLogin}>
           <div>
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Email Address
             </label>
             <input
               type="email"
+              name="email"
+              onChange={handleChange}
+              value={formData.email}
               placeholder="you@example.com"
               className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
             />
@@ -55,6 +97,9 @@ function Login() {
             </div>
             <input
               type="password"
+              name="password"
+              onChange={handleChange}
+              value={formData.password}
               placeholder="••••••••"
               className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
             />

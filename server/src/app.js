@@ -11,7 +11,10 @@ const app = express(); //main control center
 
 //This middleware runs before the route handler
 //Middleware like traffic controller what should do what
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.json()); //converts incoming json into js objects
 app.use(cookieParser()); //Required for jwt authentication
 app.use(morgan("dev"));
