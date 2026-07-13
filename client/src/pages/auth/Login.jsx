@@ -43,7 +43,7 @@ function Login() {
       dispatch(loginSuccess(response.data.user));
     
       // after the data being sent to the whole site we will redirect to the dashboard
-      navigate("/")
+      navigate("/dashboard")
     }catch(error){
       setError(error.response?.data?.message || "Invalid email or password");
     }

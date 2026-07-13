@@ -3,20 +3,27 @@ import Landing from "./pages/landing/Landing";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
+import ProtectedRoute from './components/ProtectedRoute'; 
 
-/**
- * Main Application Component (The Router)
- * 
- * This component looks at the current URL in the browser and decides which 
- * page to show. 
- */
 function App() {
   return ( 
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      
+      {/* 
+        wrapped <Dashboard /> INSIDE <ProtectedRoute>.
+        Now, if someone goes to /dashboard, the guard checks them first!
+      */}
+      <Route 
+        path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } 
+      />
     </Routes>
   );
 }
