@@ -6,6 +6,6 @@ export const store = configureStore({
     reducer: {
         // Our cooking stations:
         auth: authReducer,
-        subscriptions: subscriptionReducer, // <-- Add the new station here!
+        subscriptions: subscriptionReducer, 
     }
 })

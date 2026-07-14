@@ -44,7 +44,7 @@ function AddSubscription() {
       const response = await api.post("/subscriptions", formData);
 
       // Dispatch to redux vault;
-      dispatch(addSubscription(response.data));
+      dispatch(addSubscription(response.data.subscription));
 
       setSuccess("subscription added successfully");
 
