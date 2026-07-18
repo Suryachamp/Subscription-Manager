@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const { registerSchema } = require("../validations/subscription.validation");
 const { loginSchema } = require("../validations/subscription.validation");
 const jwt = require("jsonwebtoken");
-const { is } = require("zod/v4/locales");
 
 exports.register = async (req, res) => {
   try {
@@ -118,3 +117,45 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+
+// When the page refreshes redux loses the memory this function reads the cookie that the browser saved and returns the users info
+exports.me = async (req,res) => {
+  try {
+    // req.user.userId is injected my authmiddleware after it reads the cookie
+    // we use it to loop up the full user from the database.
+    const user = await prisma.user.findUnique({
+      where: {id: req.user.userId},
+      select: {id:true, name:true, email:true},
+    });
+    if(!user){
+      return res.status(404).json({message:"user not found"});
+    }
+
+    return res.status(200).json({user});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message:"Internal server error"
+    });
+  };
+};
+
+
+
+  // POST /auth/logout — Destroys the session
+  // Why: Simply calling clearCookie removes the JWT from the browser.
+  // Without the cookie, authMiddleware will reject all future requests.
+
+exports.logout = async (req,res) => {
+  // The cookie options (httpOnly, sameSite) must match what you used in login to correctly identify and delete the right cookie
+  res.clearCookie("token",{
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  });
+
+  return res.status(200).json({
+    message:"Logged out successfully"
+  });
+}
