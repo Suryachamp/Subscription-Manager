@@ -40,35 +40,35 @@ function Register() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center overflow-x-hidden overflow-y-auto bg-[var(--bg-primary)] px-5 py-10">
+    <div className="register-page-container relative flex min-h-screen flex-col items-center overflow-x-hidden overflow-y-auto bg-[var(--bg-primary)] px-5 py-10">
       <Background />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="glass-card w-full max-w-[400px] rounded-3xl p-8 sm:p-10 z-10 my-auto"
+        className="register-card-container glass-card w-full max-w-[400px] rounded-3xl p-8 sm:p-10 z-10 my-auto"
       >
         {/* Logo/Header */}
-        <div className="mb-8 text-center">
-          <Link to="/" className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent)] font-display text-xl font-bold text-white shadow-sm mb-4">
+        <div className="register-header-section mb-8 text-center">
+          <Link to="/" className="register-logo-link inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent)] font-display text-xl font-bold text-white shadow-sm mb-4">
             S
           </Link>
-          <h2 className="font-display text-2xl font-bold text-[var(--text-primary)]">Create an account</h2>
-          <p className="mt-2 text-sm text-[var(--text-secondary)]">
+          <h2 className="register-title font-display text-2xl font-bold text-[var(--text-primary)]">Create an account</h2>
+          <p className="register-subtitle mt-2 text-sm text-[var(--text-secondary)]">
             Start taking control of your subscriptions today.
           </p>
         </div>
 
         {/* Form (Static) */}
-        <form className="space-y-4" onSubmit={handleRegister}>
+        <form className="register-form space-y-4" onSubmit={handleRegister}>
           {error && (
-            <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-500 border border-red-500/20">
+            <div className="form-error-message rounded-lg bg-red-500/10 p-3 text-sm text-red-500 border border-red-500/20">
               {error}
             </div>
           )}
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <div className="form-group-name">
+            <label className="form-label-name mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Full Name
             </label>
             <input
@@ -77,12 +77,12 @@ function Register() {
               placeholder="John Doe"
               value={formData.name}
               onChange={handleChange}
-              className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+              className="form-input-name w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
             />
           </div>
 
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <div className="form-group-email">
+            <label className="form-label-email mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Email Address
             </label>
             <input
@@ -91,12 +91,12 @@ function Register() {
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+              className="form-input-email w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
             />
           </div>
 
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+          <div className="form-group-password">
+            <label className="form-label-password mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               Password
             </label>
             <input
@@ -105,20 +105,20 @@ function Register() {
               placeholder="Create a strong password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+              className="form-input-password w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
             />
-            <p className="mt-2 text-xs text-[var(--text-muted)]">Must be at least 8 characters long.</p>
+            <p className="password-hint mt-2 text-xs text-[var(--text-muted)]">Must be at least 8 characters long.</p>
           </div>
 
-          <Button variant="primary" type="submit" className="!mt-8 w-full">
+          <Button variant="primary" type="submit" className="register-submit-button !mt-8 w-full">
             Create Account
           </Button>
         </form>
 
         {/* Footer link */}
-        <p className="mt-6 text-center text-sm text-[var(--text-secondary)]">
+        <p className="register-footer-text mt-6 text-center text-sm text-[var(--text-secondary)]">
           Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-[var(--accent)] hover:underline">
+          <Link to="/login" className="login-link font-semibold text-[var(--accent)] hover:underline">
             Log in
           </Link>
         </p>

@@ -56,33 +56,33 @@ function AddSubscription() {
   };
 
 return (
-    <div className="glass-card rounded-3xl p-8 shadow-sm">
-      <h2 className="font-display text-2xl font-bold text-[var(--text-primary)] mb-6">
+    <div className="add-subscription-container glass-card rounded-3xl p-8 shadow-sm">
+      <h2 className="add-subscription-title font-display text-2xl font-bold text-[var(--text-primary)] mb-6">
         Add New Subscription
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-500">{error}</div>}
-        {success && <div className="rounded-lg bg-green-500/10 p-3 text-sm text-green-500">{success}</div>}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <form onSubmit={handleSubmit} className="add-subscription-form space-y-4">
+        {error && <div className="form-error-message rounded-lg bg-red-500/10 p-3 text-sm text-red-500">{error}</div>}
+        {success && <div className="form-success-message rounded-lg bg-green-500/10 p-3 text-sm text-green-500">{success}</div>}
+        <div className="form-grid grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Platform Name */}
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Platform Name</label>
-            <input type="text" name="platformName" value={formData.platformName} onChange={handleChange} placeholder="Netflix, Spotify..." className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          <div className="form-group-platform">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Platform Name</label>
+            <input type="text" name="platformName" value={formData.platformName} onChange={handleChange} placeholder="Netflix, Spotify..." className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
           </div>
           {/* Category */}
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Category</label>
-            <input type="text" name="category" value={formData.category} onChange={handleChange} placeholder="Entertainment, Music..." className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          <div className="form-group-category">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Category</label>
+            <input type="text" name="category" value={formData.category} onChange={handleChange} placeholder="Entertainment, Music..." className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
           </div>
           {/* Price */}
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Price (USD)</label>
-            <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} placeholder="15.99" className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          <div className="form-group-price">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Price (USD)</label>
+            <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} placeholder="15.99" className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
           </div>
           {/* Billing Cycle */}
-          <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Billing Cycle</label>
-            <select name="billingCycle" value={formData.billingCycle} onChange={handleChange} className="w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
+          <div className="form-group-billing-cycle">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Billing Cycle</label>
+            <select name="billingCycle" value={formData.billingCycle} onChange={handleChange} className="form-select w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
               <option value="MONTHLY">Monthly</option>
               <option value="YEARLY">Yearly</option>
               <option value="WEEKLY">Weekly</option>
