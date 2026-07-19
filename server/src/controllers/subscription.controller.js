@@ -124,3 +124,43 @@ exports.getSubscriptionbyId = async (req,res) => {
     })
   }
 };
+
+
+exports.deleteSubscription = async (req,res) => {
+  try{
+    const {id} = req.params;
+
+    // First verify that whether the subscription exists and belongs to the logged in user
+    const existingSub = await prisma.subscription.findUnique({
+      where : {id:parseInt(id)}
+    });
+
+
+    if(!existingSub){
+      return res.status(400).json({
+        message:"Subscription not found"
+      });
+    }
+
+    if(existingSub.userId !== req.user.userId){
+      return res.status(403).json({
+        message:"Unauthorized to delete this subscription"
+      });
+    }
+
+    // If it exists and they own it then delete it
+    await prisma.subscription.delete({
+      where:{id:parseInt(id)}
+    });
+
+    return res.status(200).json({
+      message:"subscription deleted successfully"
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message:"Internal server error"
+    });
+  }
+
+}

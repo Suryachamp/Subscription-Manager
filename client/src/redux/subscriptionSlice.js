@@ -20,12 +20,19 @@ const subscriptionSlice = createSlice({
     addSubscription: (state, action) => {
       // 'push' means "add this to the end of the array"
       state.subscriptions.push(action.payload);
+    },
+    removeSubscription: (state, action) => {
+      // action.payload will be the id of the subscription we want to delete
+      // we user filter to keep everything except the one that matches the ID
+      state.subscriptions = state.subscriptions.filter(
+        (sub) => sub.id !== action.payload
+      )
     }
   }
 });
 
 // 3. Export the actions (Order Tickets) so our components can use them
-export const { setSubscriptions, addSubscription } = subscriptionSlice.actions;
+export const { setSubscriptions, addSubscription, removeSubscription } = subscriptionSlice.actions;
 
 // 4. Export the reducer (The Chef)
 export default subscriptionSlice.reducer;
