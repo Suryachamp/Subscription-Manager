@@ -165,3 +165,58 @@ Here is the log of progress made on the project, tracked by date and completed m
 - Cleaned up unused files (`theme.css`, `theme.js`, old `Navbar.jsx`) and removed broken CSS mask techniques.
 - Made all sections fully responsive with Tailwind breakpoints (`sm`, `md`, `lg`).
 - Pushed the complete landing page UI to GitHub.
+
+---
+
+### **Day 15 (onward): Auth & Dashboard Integration (July 10–19, 2026)**
+- Built and connected Login/Register pages to the backend auth API via Axios.
+- Implemented Redux Toolkit store with `authSlice` for global user state persistence.
+- Built the Dashboard page with subscription list, add-subscription form, and delete functionality.
+- Auth pages and dashboard are now fully functional end-to-end.
+- Pushed all features to GitHub.
+
+---
+
+### **Day 16: Stack Audit & README Overhaul (July 19, 2026) [Today]**
+- Performed a full stack audit to identify what is actually built vs. what was planned.
+- **Removed** from README: Plaid integration, TanStack Query, Zustand, React Hook Form, TypeScript (none of these are in the actual installed packages).
+- **Corrected** the Tech Stack table to match real `package.json` dependencies exactly.
+- **Corrected** the DB schema diagram to match the actual Prisma schema (removed fictional `BankAccount` and `Reminder` tables).
+- **Added** three concrete upcoming tasks with business justification:
+  1. `express-rate-limit` on auth routes (brute-force protection gap)
+  2. `node-cron` renewal/expiry scheduler (what makes this a *subscription* manager, not just CRUD)
+  3. Jest + Supertest test suite (highest-leverage resume addition)
+- Updated the Progression Log table to reflect all 12 completed days accurately.
+
+---
+
+## 🔲 Upcoming Work (Planned)
+
+### **Day 17: Rate Limiting on Auth Routes**
+**Goal**: Add brute-force protection — a security gap any interviewer will spot.
+- `npm install express-rate-limit`
+- Configure a `loginLimiter`: max 10 requests per 15 minutes per IP
+- Apply to `POST /api/auth/login` and `POST /api/auth/register`
+- Return a clean `429 Too Many Requests` JSON response
+- Test with Postman — confirm limit kicks in after threshold
+
+### **Day 18: Cron Job — Renewal & Expiry Status Engine**
+**Goal**: Make the app actually do something with time — the whole point of a subscription manager.
+- `npm install node-cron`
+- Create `server/src/jobs/renewalChecker.js`
+- Schedule a daily job (runs at midnight): scan all subscriptions where `renewalDate` is within 7 days
+- Transition `status`: `active → expiring_soon` when within 7 days, `expiring_soon → expired` when past date
+- Register the job in `server.js` so it runs on startup
+- Test by manually setting a `renewalDate` to tomorrow and observing status change
+
+### **Day 19: Test Suite — Auth & Subscription CRUD**
+**Goal**: Add the single highest-leverage item missing from this resume project.
+- `npm install --save-dev jest supertest`
+- Configure Jest in `package.json` (set `testEnvironment: node`)
+- Create `server/src/__tests__/auth.test.js`:
+  - Test register: valid payload → 201, duplicate email → 409
+  - Test login: correct credentials → 200 + cookie, wrong password → 401
+  - Test /me: with valid cookie → 200, without cookie → 401
+- Create `server/src/__tests__/subscription.test.js`:
+  - Test create, read all, read by ID, delete — all with an authenticated test user
+- Run `npm test` and confirm all pass before committing

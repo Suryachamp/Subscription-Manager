@@ -1,156 +1,193 @@
 # 💳 Subscription Manager (SubTrack)
 
-A production-grade, full-stack subscription tracking application designed with secure authentication, relational database management, and financial API integration.
+A full-stack subscription tracking application built to demonstrate backend architecture, secure authentication, relational database design, and time-based automation logic.
 
 ---
 
-## 🛠️ Implemented Features & Core Concepts
-Here is the core functionality that has been built and implemented in this project so far:
-* **Database Management with Prisma ORM**: 
-  - Integrated PostgreSQL database connection using **Prisma ORM**.
-  - Built relational database schemas (`User` and `Subscription` models) in `prisma/schema.prisma`.
-  - Created and ran database schema migrations (`init` and `add_subscriptio`) to synchronize changes.
-* **Secure Authentication & Token Flow**:
-  - Input validation using **Zod** schema parser.
-  - Safe password storage using **Bcrypt** hashing.
-  - Session authorization using **JSON Web Tokens (JWT)** delivered via secure, script-inaccessible `HttpOnly` cookies.
-  - Route protection through custom middleware (`authMiddleware.js`) decoding cookies to authorize queries.
-* **Subscription Management API**:
-  - **Create Subscriptions (`POST /api/subscriptions`)**: Accepts validated metadata (platform names, billing cycles, start/renewal dates, payment types) and registers them under the authenticated user.
-  - **Retrieve All Subscriptions (`GET /api/subscriptions`)**: Fetches all active subscriptions associated with the logged-in user.
-  - **Retrieve Subscription by ID (`GET /api/subscriptions/:id`)**: Correctly matches parameterized IDs to fetch a single subscription record.
+## ✅ What's Actually Built (Current State)
+
+### Backend
+- **Secure Auth Flow**: Register → Login → JWT in HttpOnly cookies → Protected routes
+- **Password security**: bcrypt hashing (10 salt rounds)
+- **Input validation**: Zod schemas on all request bodies
+- **Subscription CRUD API**: Create, Read (all & by ID), Update, Delete subscriptions — all protected by auth middleware
+- **HTTP logging**: morgan request logger
+- **CORS + Cookie handling**: cors + cookie-parser configured for cross-origin frontend calls
+- **Environment config**: dotenv for secrets management
+
+### Frontend
+- **Page routing**: React Router DOM v7 (Landing → Login → Register → Dashboard)
+- **Global auth state**: Redux Toolkit + React Redux
+- **API communication**: Axios (with credentials)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Icons**: Lucide React + React Icons
+- **Landing page**: Full dark fintech UI — animated hero, feature bento grid, wallet card with 3D tilt, animated stats, CTA, footer
 
 ---
 
-## 🚀 Key Features
-- **Secure Authentication**: Session-based credentials using JWT stored in security-hardened `HttpOnly` cookies.
-- **Manual CRUD**: Create, read, update, and delete subscription records manually with transactional schema validation.
-- **Plaid Integration**: Connect real bank accounts via the Plaid Link widget to sync transactions and automatically extract recurring subscriptions.
-- **Renewal Alerts**: Background scheduler executing notifications (email/alerts) prior to upcoming renewal dates.
-- **Dashboard Analytics**: Track total monthly/annual spend, currency conversions, and interactive financial metrics.
+## 🚧 What's Planned Next (Priority Order)
+
+### 1. Rate Limiting on Auth Routes *(High Priority)*
+- Install `express-rate-limit`
+- Apply to `POST /api/auth/login` and `POST /api/auth/register`
+- Prevents brute-force attacks — a gap any security-aware interviewer will catch immediately
+
+### 2. Cron Job — Renewal & Expiry Logic *(High Priority)*
+- Install `node-cron`
+- Daily scheduled job to scan subscriptions where `renewalDate` is within N days
+- Transition `status` field from `active → expiring_soon → expired`
+- This is what makes it an actual subscription manager, not just CRUD with a subscription-shaped schema
+
+### 3. Test Suite *(Medium Priority)*
+- Install `jest` + `supertest`
+- Test coverage targets:
+  - Auth flow: register, login, logout, /me endpoint
+  - Subscription CRUD: all four operations
+  - Middleware: reject unauthenticated requests
+
+### 4. Redis Caching *(Future — when learned)*
+- Cache subscription-status lookups per user
+- Justified use case: cache-aside pattern, distinct from atomic-locking use in auction projects
+- Only add when you have Redis running locally and understand invalidation
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend (Client-Side)
-- **Vite + React (TypeScript)**: Extremely fast development build and type-safe application environment.
-- **TanStack Query (React Query)**: Declares server-state management with caching, query invalidation, and optimistic updates.
-- **Zustand**: Lightweight client-side global state management for authorization status and user configurations.
-- **React Hook Form + Zod**: Schema-based form validation and optimized input rendering.
-- **Tailwind CSS**: Contemporary styling framework for clean layouts and responsive user interfaces.
-- **Axios**: Promised-based HTTP client using interceptors to handle cookie credentials automatically.
+### Frontend
+| Package | Purpose |
+|---|---|
+| React 19 | Core UI library |
+| Vite | Build tool & dev server |
+| React Router DOM v7 | Client-side routing |
+| Redux Toolkit + React Redux | Global auth state management |
+| Axios | HTTP client for API calls |
+| Tailwind CSS v4 | Utility-first styling |
+| Framer Motion | Animations & transitions |
+| Lucide React + React Icons | Icon sets |
 
-### Backend (Server-Side)
-- **Node.js + Express**: Scalable event-driven REST API server.
-- **PostgreSQL**: Robust open-source relational database management system.
-- **Prisma ORM**: Type-safe query engine and database migrator.
-- **Plaid SDK**: Financial services gateway to ingest banking records.
-- **Security Libraries**: `bcrypt` (password hashing), `jsonwebtoken` (JWT creation/signing), `cookie-parser` (HttpOnly header processing).
-- **Automation**: `node-cron` or queue schedulers to handle automated daily checks.
+### Backend
+| Package | Purpose |
+|---|---|
+| Node.js | JavaScript runtime |
+| Express v5 | REST API framework |
+| Prisma ORM + `@prisma/client` | Type-safe DB queries & migrations |
+| PostgreSQL (via `pg`) | Relational database |
+| `jsonwebtoken` | JWT creation & verification |
+| `bcrypt` | Password hashing |
+| `zod` | Request schema validation |
+| `cookie-parser` | Read HttpOnly cookies from requests |
+| `cors` | Cross-origin request handling |
+| `morgan` | HTTP request logging |
+| `dotenv` | Environment variable management |
+| `nodemon` | Dev auto-restart |
 
 ---
 
 ## 🗺️ Project Structure
 
 ```text
-subscription-manager/
-├── client/                 # React Frontend
-│   ├── src/
-│   │   ├── api/            # API call modules (Axios client config)
-│   │   ├── components/     # Reusable UI widgets (Buttons, Modals, Cards)
-│   │   ├── features/       # Modules grouped by feature (Auth, Subscriptions)
-│   │   ├── hooks/          # Custom hooks (fetching, layout lifecycle)
-│   │   ├── store/          # Zustand global states (auth, theme)
-│   │   ├── types/          # TypeScript interfaces & types
-│   │   └── main.tsx        # Application root mount
+Subscription Manager/
+├── client/                   # React Frontend
+│   └── src/
+│       ├── api/              # Axios client config
+│       ├── components/       # Reusable UI components
+│       ├── context/          # React context providers
+│       ├── hooks/            # Custom React hooks
+│       ├── layouts/          # Page layout shells (DashboardLayout)
+│       ├── pages/            # Route-level page components
+│       ├── redux/            # Redux store, slices
+│       ├── routes/           # Route protection logic
+│       ├── services/         # API call functions
+│       └── utils/            # Helper utilities
 │
-└── server/                 # Express Backend
-    ├── src/
-    │   ├── config/         # System variables, DB, and client credentials
-    │   ├── controllers/    # Route request/response orchestrators
-    │   ├── middleware/     # Auth checks, input validators (Zod)
-    │   ├── prisma/         # Database schema.prisma & migrations
-    │   ├── routes/         # API path mappings
-    │   ├── services/       # Core business logic (DB queries, Plaid sync)
-    │   ├── utils/          # Token signers, date helpers
-    │   └── server.js       # App entrypoint
+└── server/                   # Express Backend
+    └── src/
+        ├── config/           # Prisma client, env setup
+        ├── controllers/      # Route handlers (auth, subscription)
+        ├── middleware/        # Auth guard, error handler
+        ├── routes/           # API path definitions
+        ├── services/         # Business logic layer
+        ├── utils/            # Token helpers, date utilities
+        └── validations/      # Zod schemas
 ```
 
 ---
 
-## 📊 Database Schema
+## 📊 Database Schema (Actual)
 
 ```mermaid
 erDiagram
-    User ||--o{ BankAccount : "has"
-    User ||--o{ Subscription : "manages"
-    Subscription ||--o{ Reminder : "triggers"
+    User ||--o{ Subscription : "owns"
 
     User {
-        UUID id PK
-        string email UK
-        string password_hash
-        string name
-        datetime created_at
-    }
-
-    BankAccount {
-        UUID id PK
-        UUID user_id FK
-        string plaid_access_token
-        string plaid_item_id UK
-        string institution_name
+        String id PK
+        String email UK
+        String password
+        String name
+        DateTime createdAt
+        DateTime updatedAt
     }
 
     Subscription {
-        UUID id PK
-        UUID user_id FK
-        string name
-        decimal amount
-        string currency
-        string billing_cycle
-        date next_renewal_date
-        string category
-        boolean is_active
-        string provider
-    }
-
-    Reminder {
-        UUID id PK
-        UUID subscription_id FK
-        int days_before
-        boolean is_sent
+        String id PK
+        String userId FK
+        String platformName
+        Float price
+        String currency
+        String billingCycle
+        String paymentMethod
+        String paymentProvider
+        DateTime startDate
+        DateTime renewalDate
+        Int reminderDaysBefore
+        String category
+        String status
+        String subscriptionSource
+        DateTime createdAt
+        DateTime updatedAt
     }
 ```
 
 ---
 
-## 🔌 API Endpoints Reference
+## 🔌 API Endpoints
 
 ### Authentication
-* `POST /api/auth/register` - Register a new account
-* `POST /api/auth/login` - Verify credentials & issue HttpOnly JWT Cookie
-* `POST /api/auth/logout` - Clear the session cookie
-* `GET /api/auth/me` - Retrieve current active user profile
+| Method | Route | Description |
+|---|---|---|
+| `POST` | `/api/auth/register` | Create account, hash password, return JWT cookie |
+| `POST` | `/api/auth/login` | Verify credentials, issue HttpOnly JWT cookie |
+| `POST` | `/api/auth/logout` | Clear session cookie |
+| `GET` | `/api/auth/me` | Return current user profile (protected) |
 
-### Subscriptions (CRUD)
-* `GET /api/subscriptions` - Fetch all subscriptions for the current user
-* `POST /api/subscriptions` - Manually record a subscription
-* `PUT /api/subscriptions/:id` - Edit a subscription's details
-* `DELETE /api/subscriptions/:id` - Delete a subscription
-
-### Plaid Integration
-* `POST /api/plaid/create-link-token` - Request Plaid token to launch the Link Widget
-* `POST /api/plaid/exchange-token` - Exchange public_token for a secure access_token
-* `GET /api/plaid/sync` - Sync banking transactions to update subscriptions
+### Subscriptions (all protected by auth middleware)
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/api/subscriptions` | Fetch all subscriptions for current user |
+| `POST` | `/api/subscriptions` | Create a new subscription record |
+| `PUT` | `/api/subscriptions/:id` | Update a subscription |
+| `DELETE` | `/api/subscriptions/:id` | Delete a subscription |
 
 ---
 
-## 📈 Learning and Progression Plan
-1. **[Completed] Database & ORM Layer**: Set up PostgreSQL connection, schema design, and Prisma configuration.
-2. **[Completed] Session Security**: Implement password hashing, JWT operations, and cookie storage. Checked and verified in Postman.
-3. **[Completed] Backend REST APIs**: Built core registration, login, and subscription CRUD APIs with Zod schemas and route controllers.
-4. **[Next Step] React Client Boilerplate**: Configure Vite, Tailwind, TanStack Query, and Zustand for the user interface.
-5. **[Pending] UI Integration**: Build forms (React Hook Form + Zod) and dashboards, connecting them to our backend.
-6. **[Pending] External Automations**: Connect Plaid Link, query transactions, and configure background jobs for renewal notices.
+## 📈 Progression Log
+
+| # | Task | Status |
+|---|---|---|
+| 1 | Project setup, folder structure, Git init | ✅ Done |
+| 2 | Express server, health routes, Postman validation | ✅ Done |
+| 3 | Prisma + PostgreSQL setup, User schema, migrations | ✅ Done |
+| 4 | Zod validation, bcrypt hashing, DB registration | ✅ Done |
+| 5 | JWT login, HttpOnly cookies, auth middleware | ✅ Done |
+| 6 | Subscription schema design & migration | ✅ Done |
+| 7 | Subscription CRUD API (Create, Read, Update, Delete) | ✅ Done |
+| 8 | React client boilerplate, Tailwind, routing | ✅ Done |
+| 9 | Full landing page UI (animated, dark fintech theme) | ✅ Done |
+| 10 | Auth pages (Login/Register) + Redux state | ✅ Done |
+| 11 | Dashboard UI + subscription list display | ✅ Done |
+| 12 | Delete subscription feature | ✅ Done |
+| 13 | Rate limiting on auth routes (`express-rate-limit`) | 🔲 Next |
+| 14 | Cron job — renewal/expiry status transitions | 🔲 Planned |
+| 15 | Test suite (Jest + Supertest) — auth & CRUD coverage | 🔲 Planned |

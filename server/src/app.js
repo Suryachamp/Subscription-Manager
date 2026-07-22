@@ -6,6 +6,7 @@ const healthRoutes = require("./routes/health.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes")
 const subscriptionRoutes = require("./routes/subscription.routes")
+const plaidRoutes = require('./routes/plaid.routes');
 
 const app = express(); //main control center
 
@@ -18,6 +19,7 @@ app.use(cors({
 app.use(express.json()); //converts incoming json into js objects
 app.use(cookieParser()); //Required for jwt authentication
 app.use(morgan("dev"));
+app.use('/api/plaid', plaidRoutes);
 
 //Routes through which will navigate throughout the site
 app.use("/health", healthRoutes);

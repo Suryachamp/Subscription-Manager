@@ -12,6 +12,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PlaidItem {
+  id              String   @id @default(cuid())
+  userId          Int      @unique      // Int to match User.id
+  accessToken     String
+  itemId          String   @unique
+  institutionName String?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
   // Primary Key
   id        Int      @id @default(autoincrement())
@@ -26,9 +37,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   // One User -> Many Subscriptions
-  // This is NOT a database column.
-  // It tells Prisma that one user can have many subscriptions.
   subscriptions Subscription[]
+
+  // One User -> One PlaidItem (optional — only if they connect a bank)
+  plaidItem     PlaidItem?
 }
 
 model Subscription {
