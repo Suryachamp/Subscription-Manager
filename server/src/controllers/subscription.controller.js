@@ -1,5 +1,6 @@
 const prisma = require("../config/prisma");
-const {  subscriptionSchema } = require("../validations/subscription.validation");
+const redisClient = require("../config/redis");
+const { subscriptionSchema } = require("../validations/subscription.validation");
 
 exports.createSubscription = async (req, res) => {
   try {
@@ -52,6 +53,9 @@ exports.createSubscription = async (req, res) => {
     });
 
     // Return success response
+    // INVALIDATE CACHE: Delete the user's cached data so their dashboard fetches fresh data next time
+    await redisClient.del(`subscriptions:${userId}`);
+
     return res.status(201).json({
       message: "Subscription created successfully",
       subscription,
@@ -68,20 +72,36 @@ exports.createSubscription = async (req, res) => {
 
 exports.getSubscription = async (req,res) => {
   try{
-    //why because this will give me only the subcriptions that belong to this user
     const userId = req.user.userId;
+    const cacheKey = `subscriptions:${userId}`;
 
-    //This is to get exacctly what subscriptions does that x user hold from the db
+    // 1. Check Redis Cache First
+    const cachedData = await redisClient.get(cacheKey);
+    if (cachedData) {
+      // Cache HIT! Parse the JSON string back into a JS object and return immediately.
+      return res.status(200).json({
+        message: "Subscription fetched from Cache successfully",
+        subscriptions: JSON.parse(cachedData)
+      });
+    }
+
+    // 2. Cache MISS: It wasn't in Redis. Fetch exactly what subscriptions that x user hold from the db
     const subscriptions = await prisma.subscription.findMany({
       where:{
         userId: userId,
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
-    })
+    });
+
+    // 3. Save the result into Redis for next time. Give it an expiry of 5 minutes (300 seconds)
+    await redisClient.setEx(cacheKey, 300, JSON.stringify(subscriptions));
 
     return res.status(200).json({
-      message: "Subscription fetched successfully",
+      message: "Subscription fetched from Database successfully",
       subscriptions
-    })
+    });
 
   } catch (error){
     console.log("Get subscription Error:", error);
@@ -152,6 +172,9 @@ exports.deleteSubscription = async (req,res) => {
     await prisma.subscription.delete({
       where:{id:parseInt(id)}
     });
+
+    // INVALIDATE CACHE: Delete the user's cached data so their dashboard doesn't show the deleted item
+    await redisClient.del(`subscriptions:${req.user.userId}`);
 
     return res.status(200).json({
       message:"subscription deleted successfully"

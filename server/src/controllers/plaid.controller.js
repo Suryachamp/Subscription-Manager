@@ -1,5 +1,6 @@
 const plaidClient = require('../config/plaid');
 const prisma = require('../config/prisma');
+const redisClient = require('../config/redis');
 const { Products, CountryCode } = require('plaid');
 
 // Step A: Create a link_token so the frontend can open Plaid Link
@@ -63,20 +64,54 @@ const getRecurringSubscriptions = async (req, res) => {
     });
 
     // Plaid returns outflow_streams (money leaving) and inflow_streams
-    const subscriptions = response.data.outflow_streams
-      .filter(stream => stream.is_user_modified === false) // auto-detected only
-      .map(stream => ({
-        platformName: stream.merchant_name || stream.description,
-        price: Math.abs(stream.average_amount.amount),
-        currency: stream.average_amount.iso_currency_code,
-        billingCycle: stream.frequency, // WEEKLY, BIWEEKLY, MONTHLY, ANNUALLY
-        lastPaymentDate: stream.last_date,
-        nextPaymentDate: stream.next_date,
-        category: stream.personal_finance_category?.primary || 'SUBSCRIPTION',
-        source: 'plaid', // distinguish from manual entries
-      }));
+    const filteredStreams = response.data.outflow_streams
+      .filter(stream => stream.is_user_modified === false); // auto-detected only
 
-    res.json({ subscriptions });
+    const savedSubscriptions = await Promise.all(
+      filteredStreams.map(async (stream) => {
+        const platformName = stream.merchant_name || stream.description || "Unknown Subscription";
+        const price = Math.abs(stream.average_amount.amount);
+        const currency = stream.average_amount.iso_currency_code || "USD";
+        const billingCycle = stream.frequency ? stream.frequency.toUpperCase() : "MONTHLY";
+        
+        // Handle dates safely
+        const startDate = stream.first_date ? new Date(stream.first_date) : new Date();
+        const renewalDate = stream.next_date ? new Date(stream.next_date) : (stream.last_date ? new Date(stream.last_date) : new Date());
+        
+        const category = stream.personal_finance_category?.primary || 'Entertainment';
+
+        return prisma.subscription.upsert({
+          where: { plaidStreamId: stream.stream_id },
+          update: {
+            price,
+            currency,
+            renewalDate,
+            status: stream.is_active ? 'Active' : 'Cancelled',
+          },
+          create: {
+            userId: req.user.userId,
+            platformName,
+            category,
+            price,
+            currency,
+            billingCycle,
+            startDate,
+            renewalDate,
+            reminderDaysBefore: 3, // Default reminder
+            paymentMethod: 'Bank Account',
+            paymentProvider: plaidItem.institutionName || 'Plaid',
+            status: stream.is_active ? 'Active' : 'Cancelled',
+            subscriptionSource: 'PLAID',
+            plaidStreamId: stream.stream_id,
+          }
+        });
+      })
+    );
+
+    // INVALIDATE CACHE: Delete old cache so the newly imported subscriptions show up!
+    await redisClient.del(`subscriptions:${req.user.userId}`);
+
+    res.json({ subscriptions: savedSubscriptions });
   } catch (err) {
     console.error('getRecurringSubscriptions error:', err?.response?.data || err.message);
     res.status(500).json({ error: 'Failed to fetch subscriptions' });

@@ -13,8 +13,15 @@ function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Plaid auto-detected subscriptions — stored locally, not in Redux
-  const [plaidSubscriptions, setPlaidSubscriptions] = useState([]);
+  // We no longer need local state for Plaid! They go straight to the DB.
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await api.get("/subscriptions");
+      dispatch(setSubscriptions(response.data.subscriptions));
+    } catch (error) {
+      console.error("Failed to fetch subscriptions", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -26,18 +33,10 @@ function Dashboard() {
     navigate("/login");
   };
 
-  // Fetch manual subscriptions when the dashboard loads
+  // Fetch all subscriptions (manual + Plaid) when dashboard loads
   useEffect(() => {
-    const fetchSubscription = async () => {
-      try {
-        const response = await api.get("/subscriptions");
-        dispatch(setSubscriptions(response.data.subscriptions));
-      } catch (error) {
-        console.error("Failed to fetch subscriptions", error);
-      }
-    };
-    fetchSubscription();
-  }, [dispatch]);
+    fetchSubscriptions();
+  }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this subscription?")) {
@@ -100,7 +99,8 @@ function Dashboard() {
                     {sub.platformName}
                   </h3>
                   <p className="subscription-category-date text-sm text-[var(--text-secondary)]">
-                    {sub.category} • Renews on {new Date(sub.renewalDate).toLocaleDateString()}
+                    {sub.category} • Renews on {new Date(sub.renewalDate).toLocaleDateString()} 
+                    {sub.subscriptionSource === 'PLAID' && ' 🏦 (Auto-Detected)'}
                   </p>
                 </div>
                 <div className="subscription-card-right text-right flex flex-col items-end gap-2">
@@ -129,32 +129,8 @@ function Dashboard() {
               🏦 Auto-Detected from Bank
             </h2>
 
-            {/* This button fetches a link_token, opens Plaid widget, then calls setPlaidSubscriptions */}
-            <PlaidConnect onSubscriptionsImported={setPlaidSubscriptions} />
-
-            {plaidSubscriptions.length > 0 && (
-              <div className="mt-4 space-y-3">
-                {plaidSubscriptions.map((sub) => (
-                  <div
-                    key={sub.platformName}
-                    className="glass-card rounded-2xl p-5 flex justify-between items-center border border-[var(--border)]"
-                  >
-                    <div>
-                      <h3 className="font-bold text-[var(--text-primary)]">{sub.platformName}</h3>
-                      <p className="text-sm text-[var(--text-secondary)]">
-                        {sub.category} • Next payment: {sub.nextPaymentDate}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-[var(--accent)]">${sub.price}</p>
-                      <p className="text-xs text-[var(--text-muted)]">
-                        /{sub.billingCycle?.toLowerCase()}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* This button fetches a link_token, opens Plaid widget, then tells Dashboard to fetch the updated DB list */}
+            <PlaidConnect onSubscriptionsImported={fetchSubscriptions} />
           </div>
 
         </div>

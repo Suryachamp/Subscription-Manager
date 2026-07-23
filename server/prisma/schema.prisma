@@ -41,6 +41,9 @@ model User {
 
   // One User -> One PlaidItem (optional — only if they connect a bank)
   plaidItem     PlaidItem?
+  
+  // One User -> Many Notifications
+  notifications Notification[]
 }
 
 model Subscription {
@@ -74,6 +77,9 @@ model Subscription {
   // Example: MANUAL or PLAID
   subscriptionSource   String
 
+  // Optional: Plaid Stream ID to prevent duplicates if user syncs again
+  plaidStreamId        String?  @unique
+
   // Foreign Key
   userId               Int
 
@@ -83,4 +89,36 @@ model Subscription {
   // Timestamps
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+  
+  // One Subscription -> Many Notifications
+  notifications        Notification[]
+}
+
+
+// This creates a new table in PostgreSQL to store notifications
+model Notification {
+  // Every notification gets a unique ID number
+  id          Int      @id @default(autoincrement())
+  
+  // The actual text the user will read (e.g. "Netflix renews tomorrow!")
+  message     String
+  
+  // True if the user has seen it, False if it's unread. Defaults to False.
+  isRead      Boolean  @default(false)
+  
+  // The category of the notification (e.g., "RENEWAL_ALERT")
+  type        String   
+  
+  // This links the notification to a specific User. 
+  // If the user is deleted, their notifications are deleted too (Cascade).
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // This optionally links the notification to the specific subscription.
+  // We use Int? (optional) because some notifications might not be about a subscription.
+  subscriptionId Int?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  // Records exactly when the notification was generated
+  createdAt   DateTime @default(now())
 }
