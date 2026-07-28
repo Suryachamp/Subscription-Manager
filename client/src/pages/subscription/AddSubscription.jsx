@@ -9,26 +9,31 @@ function AddSubscription() {
   const [error,setError] = useState("");
   const [success,setSuccess] = useState("");
 
-  // 1. The form state (we select some default values for the strict backend rules)
+  // 1. The form state
+  const today = new Date().toISOString().split('T')[0];
+  const nextMonth = new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().split('T')[0];
+
   const [formData,setFormData] = useState({
     platformName:"",
     category:"",
     price:"",
     currency:"USD",
-    billingCycle:"Monthly",
-    startDate: new Date().toISOString(), //today
-    renewalDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(), // 1 month from now
+    billingCycle:"MONTHLY",
+    startDate: today,
+    renewalDate: nextMonth,
     reminderDaysBefore: 3,
     paymentMethod: "CREDIT_CARD",
-    paymentProvider: "User Bank",
+    paymentProvider: "",
     status:"ACTIVE",
     subscriptionSource: "MANUAL",
   });
 
   // 2. handle typing
   const handleChange = (e) => {
-    // If they type in the price box, we need to convert it to a Number so the backend doesn't get mad!
-    const value = e.target.name === "price" ? Number(e.target.value) : e.target.value;
+    // Convert to number for specific fields
+    const value = (e.target.name === "price" || e.target.name === "reminderDaysBefore") 
+      ? Number(e.target.value) 
+      : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
   };
 
@@ -40,8 +45,15 @@ function AddSubscription() {
     setSuccess("");
 
     try{
+      // Convert HTML date strings back to full ISO format for backend Prisma
+      const payload = {
+        ...formData,
+        startDate: new Date(formData.startDate).toISOString(),
+        renewalDate: new Date(formData.renewalDate).toISOString()
+      };
+
       // send to backend
-      const response = await api.post("/subscriptions", formData);
+      const response = await api.post("/subscriptions", payload);
 
       // Dispatch to redux vault;
       dispatch(addSubscription(response.data.subscription));
@@ -88,8 +100,48 @@ return (
               <option value="WEEKLY">Weekly</option>
             </select>
           </div>
+          {/* Currency */}
+          <div className="form-group-currency">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Currency</label>
+            <select name="currency" value={formData.currency} onChange={handleChange} className="form-select w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="INR">INR (₹)</option>
+            </select>
+          </div>
+          {/* Start Date */}
+          <div className="form-group-start-date">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Start Date</label>
+            <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          </div>
+          {/* Renewal Date */}
+          <div className="form-group-renewal-date">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Next Renewal Date</label>
+            <input type="date" name="renewalDate" value={formData.renewalDate} onChange={handleChange} className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          </div>
+          {/* Reminder Days Before */}
+          <div className="form-group-reminder-days">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Reminder (Days Before)</label>
+            <input type="number" min="1" max="30" name="reminderDaysBefore" value={formData.reminderDaysBefore} onChange={handleChange} className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          </div>
+          {/* Payment Method */}
+          <div className="form-group-payment-method">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Payment Method</label>
+            <select name="paymentMethod" value={formData.paymentMethod} onChange={handleChange} className="form-select w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
+              <option value="CREDIT_CARD">Credit Card</option>
+              <option value="DEBIT_CARD">Debit Card</option>
+              <option value="PAYPAL">PayPal</option>
+              <option value="BANK_TRANSFER">Bank Transfer</option>
+            </select>
+          </div>
+          {/* Payment Provider (Card Info) */}
+          <div className="form-group-payment-provider sm:col-span-2">
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Payment Provider / Card Info</label>
+            <input type="text" name="paymentProvider" value={formData.paymentProvider} onChange={handleChange} placeholder="e.g., Visa ending in 4242, HDFC Bank..." className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
+          </div>
         </div>
-        <Button variant="primary" type="submit" className="mt-6">
+        <Button variant="primary" type="submit" className="mt-6 w-full">
           Save Subscription
         </Button>
       </form>
