@@ -192,24 +192,25 @@ Here is the log of progress made on the project, tracked by date and completed m
 
 ## 🔲 Upcoming Work (Planned)
 
-### **Day 17: Rate Limiting on Auth Routes**
-**Goal**: Add brute-force protection — a security gap any interviewer will spot.
-- `npm install express-rate-limit`
-- Configure a `loginLimiter`: max 10 requests per 15 minutes per IP
-- Apply to `POST /api/auth/login` and `POST /api/auth/register`
-- Return a clean `429 Too Many Requests` JSON response
-- Test with Postman — confirm limit kicks in after threshold
+### **Day 17: Advanced Features Integration (July 28, 2026) [Today]**
+- **Plaid Banking Integration**:
+  - Implemented auto-detection of bank subscriptions using Plaid Sandbox.
+  - Added `plaidStreamId` to Prisma schema for unique deduplication.
+  - Refactored `plaid.controller.js` to execute `prisma.subscription.upsert()` for direct database persistence of detected subscriptions.
+- **Redis Caching**:
+  - Installed `redis` and set up client in `server/src/config/redis.js`.
+  - Implemented Cache-Aside pattern in `subscription.controller.js` to serve dashboard data from memory in sub-milliseconds.
+  - Added Cache Invalidation logic (`redisClient.del`) upon subscription creation, deletion, and Plaid sync.
+- **Node-Cron Background Scheduler**:
+  - Added `Notification` table to PostgreSQL via Prisma.
+  - Set up `node-cron` in `server/src/jobs/cron.js` to run daily and generate notification alerts for subscriptions renewing within a user's specified timeframe.
+- **Socket.io WebSockets**:
+  - Upgraded Express to an HTTP server and integrated `socket.io` for real-time bi-directional communication.
+  - Created a mapped "Phonebook" of connected users to their `socket.id`.
+  - Configured the React frontend (`Dashboard.jsx`) to establish a WebSocket connection and listen for `new_notification` events.
+  - Wired the cron job to push live alerts instantly to online users, rendering an animated toast popup.
 
-### **Day 18: Cron Job — Renewal & Expiry Status Engine**
-**Goal**: Make the app actually do something with time — the whole point of a subscription manager.
-- `npm install node-cron`
-- Create `server/src/jobs/renewalChecker.js`
-- Schedule a daily job (runs at midnight): scan all subscriptions where `renewalDate` is within 7 days
-- Transition `status`: `active → expiring_soon` when within 7 days, `expiring_soon → expired` when past date
-- Register the job in `server.js` so it runs on startup
-- Test by manually setting a `renewalDate` to tomorrow and observing status change
-
-### **Day 19: Test Suite — Auth & Subscription CRUD**
+### **Day 18: Test Suite — Auth & Subscription CRUD**
 **Goal**: Add the single highest-leverage item missing from this resume project.
 - `npm install --save-dev jest supertest`
 - Configure Jest in `package.json` (set `testEnvironment: node`)

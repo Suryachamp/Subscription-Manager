@@ -1,15 +1,14 @@
-//This starts the application
-
 require("dotenv").config();
-
+const http = require("http");
 const app = require("./app");
 const startCronJobs = require("./jobs/cron");
+const { initSocket } = require("./config/socket");
 
 const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
 
-// Start the background cron jobs for notifications
+initSocket(server); // Turn on the WebSockets
 startCronJobs();
 
-app.listen(PORT,()=>{
-    console.log(`Server is running on ${PORT}`);
-})
+// Make sure it says `server.listen` and NOT `app.listen`
+server.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));

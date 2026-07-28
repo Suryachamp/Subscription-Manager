@@ -24,32 +24,22 @@ A full-stack subscription tracking application built to demonstrate backend arch
 - **Icons**: Lucide React + React Icons
 - **Landing page**: Full dark fintech UI — animated hero, feature bento grid, wallet card with 3D tilt, animated stats, CTA, footer
 
+### Advanced Features (Newly Added)
+- **Banking Auto-Sync**: Plaid integration to pull transactions and upsert detected subscriptions to the database automatically.
+- **In-Memory Caching**: Cache-aside pattern using Redis to store and serve the user's dashboard data, bypassing PostgreSQL for instant loads.
+- **Background Scheduler**: Node-Cron job running daily to calculate expiring subscriptions and generate notification records.
+- **Real-Time Engine**: Socket.io WebSockets to instantly push cron job notification alerts to online users.
+
 ---
 
 ## 🚧 What's Planned Next (Priority Order)
 
-### 1. Rate Limiting on Auth Routes *(High Priority)*
-- Install `express-rate-limit`
-- Apply to `POST /api/auth/login` and `POST /api/auth/register`
-- Prevents brute-force attacks — a gap any security-aware interviewer will catch immediately
-
-### 2. Cron Job — Renewal & Expiry Logic *(High Priority)*
-- Install `node-cron`
-- Daily scheduled job to scan subscriptions where `renewalDate` is within N days
-- Transition `status` field from `active → expiring_soon → expired`
-- This is what makes it an actual subscription manager, not just CRUD with a subscription-shaped schema
-
-### 3. Test Suite *(Medium Priority)*
+### 1. Test Suite *(Medium Priority)*
 - Install `jest` + `supertest`
 - Test coverage targets:
   - Auth flow: register, login, logout, /me endpoint
   - Subscription CRUD: all four operations
   - Middleware: reject unauthenticated requests
-
-### 4. Redis Caching *(Future — when learned)*
-- Cache subscription-status lookups per user
-- Justified use case: cache-aside pattern, distinct from atomic-locking use in auction projects
-- Only add when you have Redis running locally and understand invalidation
 
 ---
 
@@ -66,6 +56,7 @@ A full-stack subscription tracking application built to demonstrate backend arch
 | Tailwind CSS v4 | Utility-first styling |
 | Framer Motion | Animations & transitions |
 | Lucide React + React Icons | Icon sets |
+| Socket.io-client | Real-time WebSocket connection |
 
 ### Backend
 | Package | Purpose |
@@ -82,6 +73,10 @@ A full-stack subscription tracking application built to demonstrate backend arch
 | `morgan` | HTTP request logging |
 | `dotenv` | Environment variable management |
 | `nodemon` | Dev auto-restart |
+| `plaid` | Bank account auto-sync |
+| `redis` | In-memory cache client |
+| `node-cron` | Background job scheduling |
+| `socket.io` | WebSocket server for real-time alerts |
 
 ---
 
@@ -188,6 +183,8 @@ erDiagram
 | 10 | Auth pages (Login/Register) + Redux state | ✅ Done |
 | 11 | Dashboard UI + subscription list display | ✅ Done |
 | 12 | Delete subscription feature | ✅ Done |
-| 13 | Rate limiting on auth routes (`express-rate-limit`) | 🔲 Next |
-| 14 | Cron job — renewal/expiry status transitions | 🔲 Planned |
-| 15 | Test suite (Jest + Supertest) — auth & CRUD coverage | 🔲 Planned |
+| 13 | Plaid auto-import and database UPSERT deduplication | ✅ Done |
+| 14 | Redis cache-aside implementation for Dashboard API | ✅ Done |
+| 15 | Notification schema & Node-Cron background scheduler | ✅ Done |
+| 16 | Socket.io real-time WebSocket alert system | ✅ Done |
+| 17 | Test suite (Jest + Supertest) — auth & CRUD coverage | 🔲 Planned |

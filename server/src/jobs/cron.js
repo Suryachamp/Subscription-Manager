@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const prisma = require('../config/prisma');
+const { emitToUser } = require('../config/socket');
 
 const startCronJobs = () => {
   // Run every day at midnight: "0 0 * * *"
@@ -30,6 +31,10 @@ const startCronJobs = () => {
               message: `Your ${sub.platformName} subscription of $${sub.price} renews in ${diffDays} days!`,
               type: 'RENEWAL',
             }
+          });
+
+          emitToUser(sub.userId, 'new_notification', {
+            message: `Your ${sub.platformName} subscription renews in ${diffDays} days!`,
           });
           
           console.log(`✅ Created notification for user ${sub.userId} regarding ${sub.platformName}`);

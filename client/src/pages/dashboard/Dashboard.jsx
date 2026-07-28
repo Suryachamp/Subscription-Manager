@@ -6,12 +6,14 @@ import api from "../../api/axios";
 import { logout } from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import PlaidConnect from "../../components/plaid/PlaidConnect";
+import { io } from "socket.io-client";
 
 function Dashboard() {
   const { user } = useSelector((state) => state.auth);
   const { subscriptions } = useSelector((state) => state.subscriptions);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState(null);
 
   // We no longer need local state for Plaid! They go straight to the DB.
   const fetchSubscriptions = async () => {
@@ -37,6 +39,26 @@ function Dashboard() {
   useEffect(() => {
     fetchSubscriptions();
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    // Connect to the backend socket, passing our User ID
+    const socket = io("http://localhost:5000", {
+      query: { userId: user.id }
+    });
+
+    // Listen for the 'new_notification' event we created in the cron job!
+    socket.on("new_notification", (data) => {
+      setAlertMessage(data.message);
+      
+      // Auto-hide the alert after 5 seconds
+      setTimeout(() => setAlertMessage(null), 5000);
+    });
+
+    return () => socket.disconnect(); // Clean up when user logs out
+  }, [user]);
+
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this subscription?")) {
@@ -141,7 +163,16 @@ function Dashboard() {
         </div>
 
       </div>
+
+      {/* Real-time WebSocket Alert Popup */}
+      {alertMessage && (
+        <div className="fixed top-5 right-5 bg-orange-500 text-white px-6 py-4 rounded-xl shadow-lg font-bold z-50 animate-bounce">
+          🔔 {alertMessage}
+        </div>
+      )}
+
     </div>
+    
   );
 }
 
