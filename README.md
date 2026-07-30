@@ -187,4 +187,5 @@ erDiagram
 | 14 | Redis cache-aside implementation for Dashboard API | ✅ Done |
 | 15 | Notification schema & Node-Cron background scheduler | ✅ Done |
 | 16 | Socket.io real-time WebSocket alert system | ✅ Done |
-| 17 | Test suite (Jest + Supertest) — auth & CRUD coverage | 🔲 Planned |
+| 17 | Test suite (Jest + Supertest) — auth & CRUD coverage | ✅ Done |
+| 18 | Rate limiting on auth routes (`express-rate-limit`) | 🔲 Planned |
