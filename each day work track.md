@@ -223,3 +223,20 @@ Here is the log of progress made on the project, tracked by date and completed m
   - Subscription retrieval and verification.
   - Subscription deletion via ID.
 - Successfully executed all 7 tests with 100% pass rate.
+
+### **Day 19: Security, UI Polish, and India-Centric Features (August 9, 2026)**
+**Goal**: Implement essential security, improve UI interactions, and tailor the app for the Indian market.
+- **Rate Limiting**: Installed `express-rate-limit` on the server and applied it to `/login` and `/register` endpoints (max 10 attempts per 15 mins) to prevent brute-force attacks.
+- **Autopay Toggle**: 
+  - Added an `autopay` boolean field to the Prisma `Subscription` schema and migrated the database.
+  - Created a `PATCH /api/subscriptions/:id/autopay` endpoint to toggle the status.
+  - Built a dynamic toggle UI in the React Dashboard.
+  - Updated the Node-Cron job to include autopay context in notifications.
+- **Edit Subscription**:
+  - Implemented the `PUT /api/subscriptions/:id` controller.
+  - Added an Edit Modal with a pre-filled form in the Dashboard to allow easy updating.
+  - Added an `updateSubscriptionInStore` Redux reducer to instantly reflect changes on the UI.
+- **India-Centric Localization**:
+  - Changed the default currency to `INR (₹)`.
+  - Implemented dynamic currency rendering in `Dashboard.jsx`.
+  - Added UPI payment options (PhonePe, Google Pay, Paytm) to both the Add and Edit subscription forms.

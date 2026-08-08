@@ -23,18 +23,23 @@ const startCronJobs = () => {
         // If the renewal is coming up in exactly `reminderDaysBefore` days
         if (diffDays === sub.reminderDaysBefore) {
           
+          // Customize message based on autopay status
+          const autopayNote = sub.autopay 
+            ? '(Autopay ON — you will be charged automatically)' 
+            : '(Autopay OFF — don\'t forget to pay manually!)';
+
           // Create a Notification in the database
           await prisma.notification.create({
             data: {
               userId: sub.userId,
               subscriptionId: sub.id,
-              message: `Your ${sub.platformName} subscription of $${sub.price} renews in ${diffDays} days!`,
+              message: `Your ${sub.platformName} subscription of $${sub.price} renews in ${diffDays} days! ${autopayNote}`,
               type: 'RENEWAL',
             }
           });
 
           emitToUser(sub.userId, 'new_notification', {
-            message: `Your ${sub.platformName} subscription renews in ${diffDays} days!`,
+            message: `Your ${sub.platformName} subscription renews in ${diffDays} days! ${autopayNote}`,
           });
           
           console.log(`✅ Created notification for user ${sub.userId} regarding ${sub.platformName}`);

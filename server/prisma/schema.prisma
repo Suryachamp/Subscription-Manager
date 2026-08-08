@@ -73,6 +73,9 @@ model Subscription {
   // Subscription Status
   status               String
 
+  // Autopay: whether auto-renewal payment is enabled
+  autopay              Boolean  @default(false)
+
   // Source of Subscription
   // Example: MANUAL or PLAID
   subscriptionSource   String

@@ -17,7 +17,7 @@ function AddSubscription() {
     platformName:"",
     category:"",
     price:"",
-    currency:"USD",
+    currency:"INR",
     billingCycle:"MONTHLY",
     startDate: today,
     renewalDate: nextMonth,
@@ -88,7 +88,7 @@ return (
           </div>
           {/* Price */}
           <div className="form-group-price">
-            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Price (USD)</label>
+            <label className="form-label mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Price</label>
             <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} placeholder="15.99" className="form-input w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]" required />
           </div>
           {/* Billing Cycle */}
@@ -133,6 +133,10 @@ return (
               <option value="DEBIT_CARD">Debit Card</option>
               <option value="PAYPAL">PayPal</option>
               <option value="BANK_TRANSFER">Bank Transfer</option>
+              <option value="UPI">UPI</option>
+              <option value="PHONEPE">PhonePe</option>
+              <option value="GPAY">Google Pay</option>
+              <option value="PAYTM">Paytm</option>
             </select>
           </div>
           {/* Payment Provider (Card Info) */}

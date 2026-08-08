@@ -34,12 +34,35 @@ A full-stack subscription tracking application built to demonstrate backend arch
 
 ## 🚧 What's Planned Next (Priority Order)
 
-### 1. Test Suite *(Medium Priority)*
-- Install `jest` + `supertest`
-- Test coverage targets:
-  - Auth flow: register, login, logout, /me endpoint
-  - Subscription CRUD: all four operations
-  - Middleware: reject unauthenticated requests
+### Phase 1: Security & Quick Wins *(1–2 hours each)*
+
+| # | Feature | Description |
+|---|---|---|
+| 18 | **Rate Limiting** | Install `express-rate-limit` on `/login` and `/register` to prevent brute-force attacks (max 10 attempts per 15 min per IP) |
+| 19 | **Autopay Toggle** | Add `autopay` Boolean field to Prisma schema. Add toggle switch on each subscription card. Cron job uses this to customize notification message ("autopay ON — you'll be charged automatically" vs "autopay OFF — don't forget to pay") |
+| 20 | **Edit Subscription UI** | Build a frontend form for the existing `PUT /api/subscriptions/:id` endpoint. Pre-fill with current data, allow user to update any field |
+
+### Phase 2: India-Centric Features *(1–2 days)*
+
+| # | Feature | Description |
+|---|---|---|
+| 21 | **Bank Statement CSV Upload & Auto-Detection** | User uploads their bank statement CSV (from HDFC, SBI, ICICI NetBanking, etc.). Backend parses the file, detects recurring charges (same merchant + same amount + monthly pattern), and auto-creates subscriptions. Replaces Plaid for Indian users |
+| 22 | **INR Currency & UPI Payment Methods** | Add INR as default currency, add UPI payment methods (PhonePe, GPay, Paytm) to the form dropdowns |
+
+### Phase 3: DevOps & Deployment *(2–3 hours)*
+
+| # | Feature | Description |
+|---|---|---|
+| 23 | **CI/CD Pipeline** | Create `.github/workflows/test.yml` — GitHub Actions automatically runs `npm test` on every push. Proves DevOps awareness on resume |
+| 24 | **Production Deployment** | Deploy backend to Render/Railway (free tier), frontend to Vercel/Netlify, Redis to Upstash (free tier). A live URL is 10x more impressive than just a GitHub link |
+
+### Phase 4: Feature Depth *(Medium effort)*
+
+| # | Feature | Description |
+|---|---|---|
+| 25 | **Analytics Dashboard** | Spending charts using Recharts — monthly breakdown, category pie chart, spending trends over time |
+| 26 | **Email Notifications** | Use Nodemailer + Gmail/SendGrid to actually email users when subscriptions are about to renew |
+| 27 | **Profile & Settings Page** | Let users change name, password, default reminder days, and preferred currency |
 
 ---
 
@@ -188,4 +211,13 @@ erDiagram
 | 15 | Notification schema & Node-Cron background scheduler | ✅ Done |
 | 16 | Socket.io real-time WebSocket alert system | ✅ Done |
 | 17 | Test suite (Jest + Supertest) — auth & CRUD coverage | ✅ Done |
-| 18 | Rate limiting on auth routes (`express-rate-limit`) | 🔲 Planned |
+| 18 | Rate limiting on auth routes (`express-rate-limit`) | 🔲 Phase 1 |
+| 19 | Autopay toggle (schema + UI + cron integration) | 🔲 Phase 1 |
+| 20 | Edit Subscription frontend form | 🔲 Phase 1 |
+| 21 | Bank Statement CSV upload & auto-detection (India) | 🔲 Phase 2 |
+| 22 | INR currency & UPI payment method support | 🔲 Phase 2 |
+| 23 | CI/CD pipeline (GitHub Actions) | 🔲 Phase 3 |
+| 24 | Production deployment (Render + Vercel + Upstash) | 🔲 Phase 3 |
+| 25 | Analytics dashboard with spending charts | 🔲 Phase 4 |
+| 26 | Email notifications (Nodemailer) | 🔲 Phase 4 |
+| 27 | Profile & Settings page | 🔲 Phase 4 |

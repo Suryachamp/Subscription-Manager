@@ -187,3 +187,90 @@ exports.deleteSubscription = async (req,res) => {
   }
 
 }
+
+
+exports.updateSubscription = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const userId = req.user.userId;
+
+    // 1. Find the subscription and verify it belongs to the user
+    const existingSub = await prisma.subscription.findUnique({
+      where: { id }
+    });
+
+    if (!existingSub) {
+      return res.status(404).json({ message: "Subscription not found" });
+    }
+
+    if (existingSub.userId !== userId) {
+      return res.status(403).json({ message: "Unauthorized to update this subscription" });
+    }
+
+    // 2. Update with whatever fields were sent in the request body
+    const updatedSub = await prisma.subscription.update({
+      where: { id },
+      data: {
+        platformName: req.body.platformName || existingSub.platformName,
+        category: req.body.category || existingSub.category,
+        price: req.body.price !== undefined ? req.body.price : existingSub.price,
+        currency: req.body.currency || existingSub.currency,
+        billingCycle: req.body.billingCycle || existingSub.billingCycle,
+        startDate: req.body.startDate ? new Date(req.body.startDate) : existingSub.startDate,
+        renewalDate: req.body.renewalDate ? new Date(req.body.renewalDate) : existingSub.renewalDate,
+        reminderDaysBefore: req.body.reminderDaysBefore !== undefined ? req.body.reminderDaysBefore : existingSub.reminderDaysBefore,
+        paymentMethod: req.body.paymentMethod || existingSub.paymentMethod,
+        paymentProvider: req.body.paymentProvider || existingSub.paymentProvider,
+        status: req.body.status || existingSub.status,
+        autopay: req.body.autopay !== undefined ? req.body.autopay : existingSub.autopay,
+      }
+    });
+
+    // 3. Invalidate cache
+    await redisClient.del(`subscriptions:${userId}`);
+
+    return res.status(200).json({
+      message: "Subscription updated successfully",
+      subscription: updatedSub
+    });
+  } catch (error) {
+    console.error("Update Subscription Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+exports.toggleAutopay = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const userId = req.user.userId;
+
+    const existingSub = await prisma.subscription.findUnique({
+      where: { id }
+    });
+
+    if (!existingSub) {
+      return res.status(404).json({ message: "Subscription not found" });
+    }
+
+    if (existingSub.userId !== userId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    // Flip the autopay value (true → false, false → true)
+    const updatedSub = await prisma.subscription.update({
+      where: { id },
+      data: { autopay: !existingSub.autopay }
+    });
+
+    await redisClient.del(`subscriptions:${userId}`);
+
+    return res.status(200).json({
+      message: `Autopay ${updatedSub.autopay ? 'enabled' : 'disabled'} for ${updatedSub.platformName}`,
+      subscription: updatedSub
+    });
+  } catch (error) {
+    console.error("Toggle Autopay Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

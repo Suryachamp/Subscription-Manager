@@ -27,12 +27,19 @@ const subscriptionSlice = createSlice({
       state.subscriptions = state.subscriptions.filter(
         (sub) => sub.id !== action.payload
       )
+    },
+    // Action: When the user edits a subscription or toggles autopay, replace the old data with the new
+    updateSubscriptionInStore: (state, action) => {
+      const index = state.subscriptions.findIndex((sub) => sub.id === action.payload.id);
+      if (index !== -1) {
+        state.subscriptions[index] = action.payload;
+      }
     }
   }
 });
 
 // 3. Export the actions (Order Tickets) so our components can use them
-export const { setSubscriptions, addSubscription, removeSubscription } = subscriptionSlice.actions;
+export const { setSubscriptions, addSubscription, removeSubscription, updateSubscriptionInStore } = subscriptionSlice.actions;
 
 // 4. Export the reducer (The Chef)
 export default subscriptionSlice.reducer;
